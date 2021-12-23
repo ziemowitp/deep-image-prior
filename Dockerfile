@@ -1,29 +1,25 @@
-FROM nvidia/cuda:9.0-cudnn7-devel
+FROM nvidia/cuda:11.4.2-devel-ubuntu20.04
 
 # Install system dependencies
-RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+RUN apt update \
+    apt upgrade \
+    && apt install -y \
         build-essential \
         curl \
+	wget \
         git \
-    && apt-get clean
+	python3-pip
+	vim
+    && apt clean
 
-# Install python miniconda3 + requirements
-ENV MINICONDA_HOME="/opt/miniconda"
-ENV PATH="${MINICONDA_HOME}/bin:${PATH}"
-RUN curl -o Miniconda3-latest-Linux-x86_64.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh \
-    && chmod +x Miniconda3-latest-Linux-x86_64.sh \
-    && ./Miniconda3-latest-Linux-x86_64.sh -b -p "${MINICONDA_HOME}" \
-    && rm Miniconda3-latest-Linux-x86_64.sh
-COPY environment.yml environment.yml
-RUN conda env update -n=root --file=environment.yml
-RUN conda clean -y -i -l -p -t && \
-    rm environment.yml
+# This one runs with RTX 30 series GPUs
+RUN pip3 install torch==1.10.1+cu113 torchvision==0.11.2+cu113 torchaudio==0.10.1+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html \
+    && pip3 install jupyter matplotlib scikit-image compare_psnr torchvision
 
 # Clone deep image prior repository
 RUN git clone https://github.com/DmitryUlyanov/deep-image-prior.git
 WORKDIR /deep-image-prior
 
 # Start container in notebook mode
-CMD jupyter notebook --ip="*" --no-browser --allow-root
+CMD jupyter notebook --no-browser --allow-root --ip 0.0.0.0
 
