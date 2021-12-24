@@ -21,7 +21,7 @@ docker build -t deep-image-prior .
 After the build you can start the container as
 
 ```
-docker run --rm -it --ipc=host -p 8888:8888 deep-image-prior
+docker run --gpus all --rm -it --ipc=host -p 8888:8888 deep-image-prior
 ```
 
 You will be provided an URL through which you can connect to the Jupyter notebook.
