@@ -9,8 +9,8 @@ def rgb2ycbcr(im_rgb):
     im_ycbcr[:,:,1:] = (im_ycbcr[:,:,1:]*(240-16)+16)/255.0 #to [16/255, 240/255]
     return im_ycbcr
 
-def compare_psnr_y(x, y):
-    return compare_psnr(rgb2ycbcr(x.transpose(1,2,0))[:,:,0], rgb2ycbcr(y.transpose(1,2,0))[:,:,0])
+def peak_signal_noise_ratio_y(x, y):
+    return peak_signal_noise_ratio(rgb2ycbcr(x.transpose(1,2,0))[:,:,0], rgb2ycbcr(y.transpose(1,2,0))[:,:,0])
     
 from collections import defaultdict
 datasets = { 
@@ -20,7 +20,7 @@ datasets = {
 from glob import glob
 # g = sorted(glob('../image_compare/data/sr/Set5/x4/*'))
 
-from skimage.measure import compare_psnr
+from skimage.metrics import peak_signal_noise_ratio
 # our 
 stats = {}
 imsize  = -1
@@ -47,10 +47,10 @@ for cur_dataset in datasets.keys():
 
 
 
-            psnr = compare_psnr_y(gt     [:3,t2[0] + 4:t2[-1]-4,t1[0] + 4:t1[-1] - 4], 
+            psnr = peak_signal_noise_ratio_y(gt     [:3,t2[0] + 4:t2[-1]-4,t1[0] + 4:t1[-1] - 4], 
                                   methods[:3,t2[0] + 4:t2[-1]-4,t1[0] + 4:t1[-1] - 4])
 
-    #         psnr = compare_psnr(gt  [:3], 
+    #         psnr = peak_signal_noise_ratio(gt  [:3], 
     #                             ours[:3])
 
             psnrs.append(psnr)
