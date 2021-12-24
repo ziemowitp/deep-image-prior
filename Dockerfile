@@ -17,7 +17,7 @@ RUN pip3 install torch==1.10.1+cu113 torchvision==0.11.2+cu113 torchaudio==0.10.
     && pip3 install jupyter matplotlib scikit-image torchvision
 
 # Clone deep image prior repository
-RUN git clone https://github.com/DmitryUlyanov/deep-image-prior.git
+RUN git clone https://github.com/ziemowitp/deep-image-prior.git
 WORKDIR /deep-image-prior
 
 # Start container in notebook mode
